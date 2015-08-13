@@ -1,7 +1,5 @@
 var React = require('React');
 var Site = require('Site');
-// For site
-
 
 var index = React.createClass({
   render: function() {

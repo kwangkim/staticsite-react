@@ -47,7 +47,7 @@ var app = connect()
   })
   .use(reactMiddleware.provide(buildOptions))
   .use(serveStatic(FILE_SERVE_ROOT))
-  .use(morgan('combined'))
+  .use(morgan('combined')) //logger KWANG
   .use(compression())
   .use(errorHandler());
 

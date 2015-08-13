@@ -40,10 +40,8 @@ glob('src/**/*.*', function(er, files) {
 
     if (file.match(/\.js$/)) {
       targetFile = targetFile.replace(/\.js$/, '.html');
-      var url='http://0.0.0.0:8080/'       //c9
-      
       queue.push(function(cb) {
-        request(url + targetFile.replace(/^build\//, ''), function(error, response, body) { //url for c9 
+        request('http://localhost:8079/' + targetFile.replace(/^build\//, ''), function(error, response, body) {
           mkdirp.sync(targetFile.replace(new RegExp('/[^/]*$'), ''));
           fs.writeFileSync(targetFile, body);
           cb();
