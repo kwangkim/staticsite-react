@@ -1,5 +1,5 @@
-var fs = require('fs')
-var glob = require('glob');
+var fs = require('fs'); //KWANG: Node file system
+var glob = require('glob');  //Match files using the patterns https://github.com/isaacs/node-glob
 var mkdirp = require('mkdirp');
 var optimist = require('optimist');
 var path = require('path');
@@ -31,8 +31,8 @@ function backtickify(str) {
 }
 
 function execute() {
-  var MD_DIR = '../docs/';
-
+  //var MD_DIR = '../docs/'; 
+  var MD_DIR = 'docs/'; 
   glob('src/relay/docs/*.*', function(er, files) {
     files.forEach(function(file) {
       try {

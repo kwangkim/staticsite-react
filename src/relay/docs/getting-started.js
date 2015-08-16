@@ -1,24 +1,20 @@
----
-id: getting-started
-title: Getting Started
-layout: docs
-category: Quick Start
-permalink: docs/getting-started.html
-next: tutorial
-math: katex
----
-
+/**
+ * @generated
+ */
+var React = require("React");
+var Layout = require("DocsLayout");
+var content = `
 <TeX>x^4</TeX>
 
 
-```cpp{2-3}
+\`\`\`cpp{2-3}
 #include <iostream>
 using namespace std;
 int main(){
     cout<<"Hello";
     return true;
 }
-```
+\`\`\`
 
 To get started building Relay applications, you will need three things:
 
@@ -47,3 +43,13 @@ To get started building Relay applications, you will need three things:
   Relay speaks to GraphQL servers through a network layer. The [network layer](https://github.com/facebook/relay/tree/master/src/network-layer/default) that ships with Relay is compatible with express-graphql out of the box, and will continue to evolve as we add new features to the transport.
 
 The best way to get started right now is to take a look at how these three parts come together to form a working example. The tutorial on the next page will lead you through an example application, using the [Relay Starter Kit](https://github.com/facebook/relay-starter-kit), to give you an idea of how you can start using Relay on yours.
+`
+var Post = React.createClass({
+  statics: {
+    content: content
+  },
+  render: function() {
+    return <Layout metadata={{"id":"getting-started","title":"Getting Started","layout":"docs","category":"Quick Start","permalink":"docs/getting-started.html","next":"tutorial","math":"katex","source":"QuickStart-GettingStarted.md"}}>{content}</Layout>;
+  }
+});
+module.exports = Post;

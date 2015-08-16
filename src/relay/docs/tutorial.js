@@ -1,18 +1,14 @@
----
-id: tutorial
-title: Tutorial
-layout: docs
-category: Quick Start
-permalink: docs/tutorial.html
-next: videos
-math: mathjax
----
-\\[x^2\\] \\(x\\) $$x^5$$
+/**
+ * @generated
+ */
+var React = require("React");
+var Layout = require("DocsLayout");
+var content = `\\\\[x^2\\\\] \\\\(x\\\\) $$x^5$$
 
-```
+\`\`\`
 <strong>a</strong> 
 
-```
+\`\`\`
 
 In this tutorial, we will build a game using GraphQL mutations. The object of the game will be to guess where in a grid of 9 squares is hidden some treasure. We will give players three tries to find the treasure. This should give us an end-to-end look at Relay – from the GraphQL schema on the server, to the React application on the client.
 
@@ -20,17 +16,17 @@ In this tutorial, we will build a game using GraphQL mutations. The object of th
 
 Let's start a project using the Relay Starter Kit as a base.
 
-```
+\`\`\`
 git clone git@github.com:facebook/relay-starter-kit.git relay-treasurehunt
 cd relay-treasurehunt
 npm install
-```
+\`\`\`
 
 ## A simple database
 
 We need a place to hide our treasure, a way to check hiding spots for treasure, and a way to track our turns remaining. For the purposes of this tutorial, we'll hide these data in memory.
 
-```
+\`\`\`
 /**
  * ./data/database.js
  */
@@ -49,7 +45,7 @@ var hidingSpots = [];
   var indexOfSpotWithTreasure = Math.floor(Math.random() * 9);
   for (var i = 0; i < 9; i++) {
     hidingSpot = new HidingSpot();
-    hidingSpot.id = `${i}`;
+    hidingSpot.id = \`\${i}\`;
     hidingSpot.hasTreasure = (i === indexOfSpotWithTreasure);
     hidingSpot.hasBeenChecked = false;
     hidingSpots.push(hidingSpot);
@@ -72,7 +68,7 @@ export function getHidingSpot(id) {
 export function getGame() { return game; }
 export function getHidingSpots() { return hidingSpots; }
 export function getTurnsRemaining() { return turnsRemaining; }
-```
+\`\`\`
 
 What we have written here is a mock database interface. We can imagine hooking this up to a real database, but for now let's move on.
 
@@ -86,7 +82,7 @@ schema.
 
 Let's open up the starter kit's schema, and replace the database imports with the ones we just created:
 
-```
+\`\`\`
 /**
  * ./data/schema.js
  */
@@ -102,13 +98,13 @@ import {
   getHidingSpots,
   getTurnsRemaining,
 } from './database';
-```
+\`\`\`
 
-At this point, you can delete everything up until `queryType` in `./data/schema.js`.
+At this point, you can delete everything up until \`queryType\` in \`./data/schema.js\`.
 
 Next, let's define a node interface and type. We need only provide a way for Relay to map from an object to the GraphQL type associated with that object, and from a global ID to the object it points to:
 
-```
+\`\`\`
 var {nodeInterface, nodeField} = nodeDefinitions(
   (globalId) => {
     var {type, id} = fromGlobalId(globalId);
@@ -130,11 +126,11 @@ var {nodeInterface, nodeField} = nodeDefinitions(
     }
   }
 );
-```
+\`\`\`
 
 Next, let's define our game and hiding spot types, and the fields that are available on each.
 
-```
+\`\`\`
 var gameType = new GraphQLObjectType({
   name: 'Game',
   description: 'A treasure search game',
@@ -179,18 +175,18 @@ var hidingSpotType = new GraphQLObjectType({
   }),
   interfaces: [nodeInterface],
 });
-```
+\`\`\`
 
 Since one game can have many hiding spots, we need to create a connection that we can use to link them together.
 
-```
+\`\`\`
 var {connectionType: hidingSpotConnection} =
   connectionDefinitions({name: 'HidingSpot', nodeType: hidingSpotType});
-```
+\`\`\`
 
 Now let's associate these types with the root query type.
 
-```
+\`\`\`
 var queryType = new GraphQLObjectType({
   name: 'Query',
   fields: () => ({
@@ -201,11 +197,11 @@ var queryType = new GraphQLObjectType({
     },
   }),
 });
-```
+\`\`\`
 
 With the queries out of the way, let's start in on our only mutation: the one that spends a turn by checking a spot for treasure. Here, we define the input to the mutation (the id of a spot to check for treasure) and a list of all of the possible fields that the client might want updates about after the mutation has taken place. Finally, we implement a method that performs the underlying mutation.
 
-```
+\`\`\`
 var CheckHidingSpotForTreasureMutation = mutationWithClientMutationId({
   name: 'CheckHidingSpotForTreasure',
   inputFields: {
@@ -227,82 +223,82 @@ var CheckHidingSpotForTreasureMutation = mutationWithClientMutationId({
     return {localHidingSpotId};
   },
 });
-```
+\`\`\`
 
 Let's associate the mutation we just created with the root mutation type:
 
-```
+\`\`\`
 var mutationType = new GraphQLObjectType({
   name: 'Mutation',
   fields: () => ({
     checkHidingSpotForTreasure: CheckHidingSpotForTreasureMutation,
   }),
 });
-```
+\`\`\`
 
 Finally, we construct our schema (whose starting query type is the query type we defined above) and export it.
 
-```
+\`\`\`
 export var Schema = new GraphQLSchema({
   query: queryType,
   mutation: mutationType
 });
-```
+\`\`\`
 
 ## Processing the schema
 
 Before going any further, we need to serialize our executable schema to JSON for use by the Relay.QL transpiler, then start up the server. From the command line:
 
-```
+\`\`\`
 ./scripts/updateSchema.js
 npm start
-```
+\`\`\`
 
 ## Writing the game
 
-Let's tweak the file `./routes/AppHomeRoute.js` to anchor our game to the `game` root field of the schema:
+Let's tweak the file \`./routes/AppHomeRoute.js\` to anchor our game to the \`game\` root field of the schema:
 
-```
+\`\`\`
 export default class extends Relay.Route {
   static path = '/';
   static queries = {
-    game: (Component) => Relay.QL`
+    game: (Component) => Relay.QL\`
       query {
         game {
-          ${Component.getFragment('game')},
+          \${Component.getFragment('game')},
         },
       }
-    `,
+    \`,
   };
   static routeName = 'AppHomeRoute';
 }
-```
+\`\`\`
 
-Next, let's create a file in `./mutations/CheckHidingSpotForTreasureMutation.js` and create subclass of `Relay.Mutation` called `CheckHidingSpotForTreasureMutation` to hold our mutation implementation:
+Next, let's create a file in \`./mutations/CheckHidingSpotForTreasureMutation.js\` and create subclass of \`Relay.Mutation\` called \`CheckHidingSpotForTreasureMutation\` to hold our mutation implementation:
 
-```
+\`\`\`
 export default class CheckHidingSpotForTreasureMutation extends Relay.Mutation {
   static fragments = {
-    game: () => Relay.QL`
+    game: () => Relay.QL\`
       fragment on Game {
         id,
         turnsRemaining,
       }
-    `,
-    hidingSpot: () => Relay.QL`
+    \`,
+    hidingSpot: () => Relay.QL\`
       fragment on HidingSpot {
         id,
       }
-    `,
+    \`,
   };
   getMutation() {
-    return Relay.QL`mutation{checkHidingSpotForTreasure}`;
+    return Relay.QL\`mutation{checkHidingSpotForTreasure}\`;
   }
   getCollisionKey() {
-    return `check_${this.props.game.id}`;
+    return \`check_\${this.props.game.id}\`;
   }
   getFatQuery() {
-    return Relay.QL`
+    return Relay.QL\`
       fragment on CheckHidingSpotForTreasurePayload {
         hidingSpot {
           hasBeenChecked,
@@ -312,7 +308,7 @@ export default class CheckHidingSpotForTreasureMutation extends Relay.Mutation {
           turnsRemaining,
         },
       }
-    `;
+    \`;
   }
   getConfigs() {
     return [{
@@ -340,11 +336,11 @@ export default class CheckHidingSpotForTreasureMutation extends Relay.Mutation {
     };
   }
 }
-```
+\`\`\`
 
-Finally, let's tie it all together in `./components/App.js`:
+Finally, let's tie it all together in \`./components/App.js\`:
 
-```
+\`\`\`
 import CheckHidingSpotForTreasureMutation from '../mutations/CheckHidingSpotForTreasureMutation';
 
 class App extends React.Component {
@@ -402,7 +398,7 @@ class App extends React.Component {
   render() {
     var headerText;
     if (this.props.relay.getPendingTransactions(this.props.game)) {
-      headerText = '\u2026';
+      headerText = '\\u2026';
     } else if (this._hasFoundTreasure()) {
       headerText = 'You win!';
     } else if (this._isGameOver()) {
@@ -422,7 +418,7 @@ class App extends React.Component {
 
 export default Relay.createContainer(App, {
   fragments: {
-    game: () => Relay.QL`
+    game: () => Relay.QL\`
       fragment on Game {
         turnsRemaining,
         hidingSpots(first: 9) {
@@ -431,18 +427,18 @@ export default Relay.createContainer(App, {
               hasBeenChecked,
               hasTreasure,
               id,
-              ${CheckHidingSpotForTreasureMutation.getFragment('hidingSpot')},
+              \${CheckHidingSpotForTreasureMutation.getFragment('hidingSpot')},
             }
           }
         },
-        ${CheckHidingSpotForTreasureMutation.getFragment('game')},
+        \${CheckHidingSpotForTreasureMutation.getFragment('game')},
       }
-    `,
+    \`,
   },
 });
-```
+\`\`\`
 
-A working copy of the treasure hunt can be found in the `./examples/` directory.
+A working copy of the treasure hunt can be found in the \`./examples/\` directory.
 
 Now that we've gone end-to-end with Relay, let's dive into more detail in the guides section.
 ---
@@ -455,7 +451,7 @@ next: videos
 math: mathjax
 ---
 <h3> KWANG </h3>
-\(x^2\)
+\\(x^2\\)
 <strong>hi</strong> <h3>2</h3>
 
 In this tutorial, we will build a game using GraphQL mutations. The object of the game will be to guess where in a grid of 9 squares is hidden some treasure. We will give players three tries to find the treasure. This should give us an end-to-end look at Relay – from the GraphQL schema on the server, to the React application on the client.
@@ -464,17 +460,17 @@ In this tutorial, we will build a game using GraphQL mutations. The object of th
 
 Let's start a project using the Relay Starter Kit as a base.
 
-```
+\`\`\`
 git clone git@github.com:facebook/relay-starter-kit.git relay-treasurehunt
 cd relay-treasurehunt
 npm install
-```
+\`\`\`
 
 ## A simple database
 
 We need a place to hide our treasure, a way to check hiding spots for treasure, and a way to track our turns remaining. For the purposes of this tutorial, we'll hide these data in memory.
 
-```
+\`\`\`
 /**
  * ./data/database.js
  */
@@ -493,7 +489,7 @@ var hidingSpots = [];
   var indexOfSpotWithTreasure = Math.floor(Math.random() * 9);
   for (var i = 0; i < 9; i++) {
     hidingSpot = new HidingSpot();
-    hidingSpot.id = `${i}`;
+    hidingSpot.id = \`\${i}\`;
     hidingSpot.hasTreasure = (i === indexOfSpotWithTreasure);
     hidingSpot.hasBeenChecked = false;
     hidingSpots.push(hidingSpot);
@@ -516,7 +512,7 @@ export function getHidingSpot(id) {
 export function getGame() { return game; }
 export function getHidingSpots() { return hidingSpots; }
 export function getTurnsRemaining() { return turnsRemaining; }
-```
+\`\`\`
 
 What we have written here is a mock database interface. We can imagine hooking this up to a real database, but for now let's move on.
 
@@ -530,7 +526,7 @@ schema.
 
 Let's open up the starter kit's schema, and replace the database imports with the ones we just created:
 
-```
+\`\`\`
 /**
  * ./data/schema.js
  */
@@ -546,13 +542,13 @@ import {
   getHidingSpots,
   getTurnsRemaining,
 } from './database';
-```
+\`\`\`
 
-At this point, you can delete everything up until `queryType` in `./data/schema.js`.
+At this point, you can delete everything up until \`queryType\` in \`./data/schema.js\`.
 
 Next, let's define a node interface and type. We need only provide a way for Relay to map from an object to the GraphQL type associated with that object, and from a global ID to the object it points to:
 
-```
+\`\`\`
 var {nodeInterface, nodeField} = nodeDefinitions(
   (globalId) => {
     var {type, id} = fromGlobalId(globalId);
@@ -574,11 +570,11 @@ var {nodeInterface, nodeField} = nodeDefinitions(
     }
   }
 );
-```
+\`\`\`
 
 Next, let's define our game and hiding spot types, and the fields that are available on each.
 
-```
+\`\`\`
 var gameType = new GraphQLObjectType({
   name: 'Game',
   description: 'A treasure search game',
@@ -623,18 +619,18 @@ var hidingSpotType = new GraphQLObjectType({
   }),
   interfaces: [nodeInterface],
 });
-```
+\`\`\`
 
 Since one game can have many hiding spots, we need to create a connection that we can use to link them together.
 
-```
+\`\`\`
 var {connectionType: hidingSpotConnection} =
   connectionDefinitions({name: 'HidingSpot', nodeType: hidingSpotType});
-```
+\`\`\`
 
 Now let's associate these types with the root query type.
 
-```
+\`\`\`
 var queryType = new GraphQLObjectType({
   name: 'Query',
   fields: () => ({
@@ -645,11 +641,11 @@ var queryType = new GraphQLObjectType({
     },
   }),
 });
-```
+\`\`\`
 
 With the queries out of the way, let's start in on our only mutation: the one that spends a turn by checking a spot for treasure. Here, we define the input to the mutation (the id of a spot to check for treasure) and a list of all of the possible fields that the client might want updates about after the mutation has taken place. Finally, we implement a method that performs the underlying mutation.
 
-```
+\`\`\`
 var CheckHidingSpotForTreasureMutation = mutationWithClientMutationId({
   name: 'CheckHidingSpotForTreasure',
   inputFields: {
@@ -671,82 +667,82 @@ var CheckHidingSpotForTreasureMutation = mutationWithClientMutationId({
     return {localHidingSpotId};
   },
 });
-```
+\`\`\`
 
 Let's associate the mutation we just created with the root mutation type:
 
-```
+\`\`\`
 var mutationType = new GraphQLObjectType({
   name: 'Mutation',
   fields: () => ({
     checkHidingSpotForTreasure: CheckHidingSpotForTreasureMutation,
   }),
 });
-```
+\`\`\`
 
 Finally, we construct our schema (whose starting query type is the query type we defined above) and export it.
 
-```
+\`\`\`
 export var Schema = new GraphQLSchema({
   query: queryType,
   mutation: mutationType
 });
-```
+\`\`\`
 
 ## Processing the schema
 
 Before going any further, we need to serialize our executable schema to JSON for use by the Relay.QL transpiler, then start up the server. From the command line:
 
-```
+\`\`\`
 ./scripts/updateSchema.js
 npm start
-```
+\`\`\`
 
 ## Writing the game
 
-Let's tweak the file `./routes/AppHomeRoute.js` to anchor our game to the `game` root field of the schema:
+Let's tweak the file \`./routes/AppHomeRoute.js\` to anchor our game to the \`game\` root field of the schema:
 
-```
+\`\`\`
 export default class extends Relay.Route {
   static path = '/';
   static queries = {
-    game: (Component) => Relay.QL`
+    game: (Component) => Relay.QL\`
       query {
         game {
-          ${Component.getFragment('game')},
+          \${Component.getFragment('game')},
         },
       }
-    `,
+    \`,
   };
   static routeName = 'AppHomeRoute';
 }
-```
+\`\`\`
 
-Next, let's create a file in `./mutations/CheckHidingSpotForTreasureMutation.js` and create subclass of `Relay.Mutation` called `CheckHidingSpotForTreasureMutation` to hold our mutation implementation:
+Next, let's create a file in \`./mutations/CheckHidingSpotForTreasureMutation.js\` and create subclass of \`Relay.Mutation\` called \`CheckHidingSpotForTreasureMutation\` to hold our mutation implementation:
 
-```
+\`\`\`
 export default class CheckHidingSpotForTreasureMutation extends Relay.Mutation {
   static fragments = {
-    game: () => Relay.QL`
+    game: () => Relay.QL\`
       fragment on Game {
         id,
         turnsRemaining,
       }
-    `,
-    hidingSpot: () => Relay.QL`
+    \`,
+    hidingSpot: () => Relay.QL\`
       fragment on HidingSpot {
         id,
       }
-    `,
+    \`,
   };
   getMutation() {
-    return Relay.QL`mutation{checkHidingSpotForTreasure}`;
+    return Relay.QL\`mutation{checkHidingSpotForTreasure}\`;
   }
   getCollisionKey() {
-    return `check_${this.props.game.id}`;
+    return \`check_\${this.props.game.id}\`;
   }
   getFatQuery() {
-    return Relay.QL`
+    return Relay.QL\`
       fragment on CheckHidingSpotForTreasurePayload {
         hidingSpot {
           hasBeenChecked,
@@ -756,7 +752,7 @@ export default class CheckHidingSpotForTreasureMutation extends Relay.Mutation {
           turnsRemaining,
         },
       }
-    `;
+    \`;
   }
   getConfigs() {
     return [{
@@ -784,11 +780,11 @@ export default class CheckHidingSpotForTreasureMutation extends Relay.Mutation {
     };
   }
 }
-```
+\`\`\`
 
-Finally, let's tie it all together in `./components/App.js`:
+Finally, let's tie it all together in \`./components/App.js\`:
 
-```
+\`\`\`
 import CheckHidingSpotForTreasureMutation from '../mutations/CheckHidingSpotForTreasureMutation';
 
 class App extends React.Component {
@@ -846,7 +842,7 @@ class App extends React.Component {
   render() {
     var headerText;
     if (this.props.relay.getPendingTransactions(this.props.game)) {
-      headerText = '\u2026';
+      headerText = '\\u2026';
     } else if (this._hasFoundTreasure()) {
       headerText = 'You win!';
     } else if (this._isGameOver()) {
@@ -866,7 +862,7 @@ class App extends React.Component {
 
 export default Relay.createContainer(App, {
   fragments: {
-    game: () => Relay.QL`
+    game: () => Relay.QL\`
       fragment on Game {
         turnsRemaining,
         hidingSpots(first: 9) {
@@ -875,17 +871,27 @@ export default Relay.createContainer(App, {
               hasBeenChecked,
               hasTreasure,
               id,
-              ${CheckHidingSpotForTreasureMutation.getFragment('hidingSpot')},
+              \${CheckHidingSpotForTreasureMutation.getFragment('hidingSpot')},
             }
           }
         },
-        ${CheckHidingSpotForTreasureMutation.getFragment('game')},
+        \${CheckHidingSpotForTreasureMutation.getFragment('game')},
       }
-    `,
+    \`,
   },
 });
-```
+\`\`\`
 
-A working copy of the treasure hunt can be found in the `./examples/` directory.
+A working copy of the treasure hunt can be found in the \`./examples/\` directory.
 
 Now that we've gone end-to-end with Relay, let's dive into more detail in the guides section.
+`
+var Post = React.createClass({
+  statics: {
+    content: content
+  },
+  render: function() {
+    return <Layout metadata={{"id":"tutorial","title":"Tutorial","layout":"docs","category":"Quick Start","permalink":"docs/tutorial.html","next":"videos","math":"mathjax","source":"QuickStart-Tutorial.md"}}>{content}</Layout>;
+  }
+});
+module.exports = Post;

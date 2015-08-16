@@ -28,22 +28,22 @@ var buildOptions = {
   projectRoot: PROJECT_ROOT,
   pageRouteRoot: FILE_SERVE_ROOT,
   useBrowserBuiltins: false,
-  logTiming: true,
+  logTiming: false, //KWANG Change to console.log instead of util.print
   useSourceMaps: true,
   ignorePaths: function(p) {
     return p.indexOf('__tests__') !== -1;
   },
   serverRender: true,
   dev: argv.dev !== 'false',
-  static: true
+  static: true // KWANG Use renderToStaticMarkup.
 };
-
+ //KWANG - connect: HTTP server https://github.com/senchalabs/connect 
 var app = connect()
   .use(function(req, res, next) {
     // convert all the md files on every request. This is not optimal
     // but fast enough that we don't really need to care right now.
-    convert();
-    next();
+    convert(); //KWANG: Convert docs files dynamic ways.
+    next(); //escape!
   })
   .use(reactMiddleware.provide(buildOptions))
   .use(serveStatic(FILE_SERVE_ROOT))

@@ -1,27 +1,26 @@
 var React = require('React');
 var Site = require('Site');
 // For site
-
-
+var title='Relay';
+var desc='A JavaScript framework for building data-driven React applications';
 var index = React.createClass({
-  render: function() {
+  render : function() {
     return (
       <Site>
         <div className="hero">
           <div className="wrap">
-            <h1 className="text"><strong>Relay</strong></h1>
+            <h1 className="text"><strong>{title}</strong></h1>
             <h2 className="minitext">
-              A JavaScript framework for building data-driven React applications
+              {desc}
             </h2>
           </div>
         </div>
-
         <section className="content wrap">
           <section className="marketing-row">
             <div className="marketing-col">
               <h3>Declarative</h3>
               <p>
-                Never again communicate with your data store using an imperative
+                $$x^2=3$$ Never again communicate with your data store using an imperative
                 API. Simply declare your data requirements using GraphQL and let
                 Relay figure out how and when to fetch your data.
               </p>
@@ -46,7 +45,6 @@ var index = React.createClass({
         </section>
 
         <hr className="home-divider" />
-
         <section className="home-bottom-section">
           <div className="buttons-unit">
             <a className="button" href="docs/getting-started.html">
@@ -63,5 +61,4 @@ var index = React.createClass({
     );
   }
 });
-
 module.exports = index;

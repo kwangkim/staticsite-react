@@ -1,20 +1,17 @@
----
-id: api-reference-relay
-title: Relay
-layout: docs
-category: API Reference
-permalink: docs/api-reference-relay.html
-next: api-reference-relay-container
----
+/**
+ * @generated
+ */
+var React = require("React");
+var Layout = require("DocsLayout");
+var content = `
 
-
-`Relay` is the entry point to the Relay library. If you're using one of the prebuilt packages it's available as a global; if you're using CommonJS modules you can `require()` it.
+\`Relay\` is the entry point to the Relay library. If you're using one of the prebuilt packages it's available as a global; if you're using CommonJS modules you can \`require\()\` it.
 
 > Note
 >
-> The `react-relay` npm module includes `react` as a *peer dependency*. Your app should specify React as a dependency explicitly.
+> The \`react-relay\` npm module includes \`react\` as a *peer dependency*. Your app should specify React as a dependency explicitly.
 
-The most-used function is [`createContainer()`](#createcontainer-static-method) which wraps components with data declarations.
+The most-used function is [\`createContainer()\`](#createcontainer-static-method) which wraps components with data declarations.
 
 ## Overview
 
@@ -122,25 +119,25 @@ See the [Store API reference](api-reference-relay-store.html).
 
 ### createContainer (static method)
 
-```
+\`\`\`
 var Container = Relay.createContainer(Component, {
   initialVariables?: Object,
   prepareVariables?: (variables: Object, route: string) => Object,
   fragments: {[key: string]: Function}
 });
-```
+\`\`\`
 
 Creates a new Relay Container - see the [Container Guide](guides-containers.html) for more details and examples.
 
 ### injectNetworkLayer (static method)
 
-```
+\`\`\`
 Relay.injectNetworkLayer(networkLayer: {
   sendMutation: (mutation: RelayMutationRequest) => void;
   sendQueries: (queries: Array<RelayQueryRequest>) => void;
   supports: (...options: Array<string>): boolean;
 });
-```
+\`\`\`
 
 Overrides the [DefaultNetworkLayer](#defaultnetworklayer-static-property).
 
@@ -148,7 +145,7 @@ Overrides the [DefaultNetworkLayer](#defaultnetworklayer-static-property).
 
 As an example, we can log each mutation that is sent to the server as follows:
 
-```
+\`\`\`
 var DefaultNetworkLayer = Relay.DefaultNetworkLayer;
 
 var MutationLoggingNetworkLayer = {
@@ -168,15 +165,15 @@ var MutationLoggingNetworkLayer = {
 };
 
 Relay.injectNetworkLayer(MutationLoggingNetworkLayer);
-```
+\`\`\`
 
 ### injectTaskScheduler (static method)
 
-```
+\`\`\`
 Relay.injectTaskScheduler(scheduler: Scheduler): void;
 
 type Scheduler = (task: Function) => void;
-```
+\`\`\`
 
 Relay wraps its core processing functions inside lightweight tasks, which by default are executed immediately (i.e. synchronously). In order to customize *when* these tasks are run - for example to avoid interrupting an animation during a touch gesture - applications can provide a custom scheduling function.
 
@@ -184,34 +181,44 @@ Relay wraps its core processing functions inside lightweight tasks, which by def
 
 The default implementation is as follows:
 
-```
+\`\`\`
 Relay.injectTaskScheduler(task => task());
-```
+\`\`\`
 
 Notice that it immediately executes the next task. Relay manages the order of tasks to ensure a proper order of operations - the scheduler can't skip or reorder tasks, only decide when to execute the next one.
 
 In React Native, we can schedule Relay processing so as to avoid interrupting touch gestures as follows:
 
-```
-var {InteractionManager} = require('react-native');
+\`\`\`
+var {InteractionManager} = require\('react-native');
 
 Relay.injectTaskScheduler(InteractionManager.runAfterInteractions);
-```
+\`\`\`
 
-You can read more about `InteractionManager` on the [React Native API docs](http://facebook.github.io/react-native/docs/interactionmanager.html).
+You can read more about \`InteractionManager\` on the [React Native API docs](http://facebook.github.io/react-native/docs/interactionmanager.html).
 
 ### isContainer (static method)
 
-```
+\`\`\`
 Relay.isContainer(Component: Object): boolean;
-```
+\`\`\`
 
 #### Example
 
-```
-var Component = require('...');
+\`\`\`
+var Component = require\('...');
 
 if (Relay.isContainer(Component)) {
   Component.getFragment('...');
 }
-```
+\`\`\`
+`
+var Post = React.createClass({
+  statics: {
+    content: content
+  },
+  render: function() {
+    return <Layout metadata={{"id":"api-reference-relay","title":"Relay","layout":"docs","category":"API Reference","permalink":"docs/api-reference-relay.html","next":"api-reference-relay-container","source":"APIReference-Relay.md"}}>{content}</Layout>;
+  }
+});
+module.exports = Post;
