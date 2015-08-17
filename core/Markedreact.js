@@ -642,13 +642,13 @@ InlineLexer.prototype.output = function(src) {
       continue;
     }
     // mathdd $$ $$
-    if (cap = this.rules.math.exec(src)) {
+    if (cap = this.rules.mathdd.exec(src)) {
       src = src.substring(cap[0].length);
       console.log("math! cap[2]="+cap[2]+"\n");
       out.push(React.createElement(Katex, {md: true}, cap[2]));
       continue;
     }
-    // escape KWANG - Check http://genius.com/3057216
+    // escape KWANG - Check 
     if (cap = this.rules.escape.exec(src)) {
       src = src.substring(cap[0].length);
       out.push(cap[1]);

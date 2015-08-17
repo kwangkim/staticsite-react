@@ -61,8 +61,6 @@ var Mathhead = React.createClass({
           <meta property="og:description" content={metadesc} />
           <link rel="shortcut icon" href={path+"img/favicon.png"} />
           <link rel="stylesheet" href={path+"css/"+cssname} />
-          <script type="text/javascript" src="//use.typekit.net/vqa1hcx.js"></script>
-          <script type="text/javascript">{'try{Typekit.load();}catch(e){}'}</script>
         </head>
     ); 
   }
