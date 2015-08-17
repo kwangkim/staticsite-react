@@ -15,12 +15,13 @@
 var React = require('react');
 var Prism = require('Prism');
 var Header = require('Header');
-var katex = require('katex'); //KWANG
+var Katex = require('Katex');
 /*
 From https://github.com/ForbesLindesay/supermarked/blob/master/index.js
 
 
 */
+/*
 function renderMathsExpression(expr) {
   if (expr[0] === '$' && expr[expr.length - 1] === '$') {
     var displayStyle = false;
@@ -38,6 +39,7 @@ function renderMathsExpression(expr) {
     return null;
   }
 }
+*/
 /* Mathpart!
   if (options.math !== false) {
     options.renderer = new marked.Renderer();
@@ -92,13 +94,21 @@ block.list = replace(block.list)
   (/bull/g, block.bullet)
   ('hr', /\n+(?=(?: *[-*_]){3,} *(?:\n+|$))/)
   ();
-
+//Blocked front tag List. With nested with div, it is ok.
+/* original
 block._tag = '(?!(?:'
   + 'a|em|strong|small|s|cite|q|dfn|abbr|data|time|code'
   + '|var|samp|kbd|sub|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo'
   + '|span|br|wbr|ins|del|img)\\b)\\w+(?!:/|@)\\b';
+*/
+block._tag = '(?!(?:'
+  + 'a|em|strong|small|s|cite|q|dfn|abbr|data|time|code'
+  + '|var|samp|kbd|sub|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo'
+  + '|span|br|wbr|ins|del|img)\\b)\\w+(?!:/|@)\\b';
+// KWANG : replace is a functor: (reg,opt)->self function
+// KWANG: self is also a conditional functor.
 
-block.html = replace(block.html)
+block.html = replace(block.html)  
   ('comment', /<!--[\s\S]*?-->/)
   ('closed', /<(tag)[\s\S]+?<\/\1>/)
   ('closing', /<tag(?:"[^"]*"|'[^']*'|[^'">])*?>/)
@@ -205,7 +215,7 @@ Lexer.prototype.token = function(src, top) {
     , item
     , space
     , i
-    , l; //KWANG Multiple declaration.
+    , l; //KWANG Multiple declarations.
 
   while (src) {
     // newline
@@ -495,7 +505,7 @@ Lexer.prototype.token = function(src, top) {
 /**
  * Inline-Level Grammar
  */
-
+// KWANG mathi:inline math \( \), mathd: mathdisplay \[ \], mathdd $$ $$ from strong regex.
 var inline = {
   escape: /^\\([\\`*{}\[\]()#+\-.!_>])/,
   autolink: /^<([^ >]+(@|:\/)[^ >]+)>/,
@@ -509,9 +519,11 @@ var inline = {
   code: /^(`+)\s*([\s\S]*?[^`])\s*\1(?!`)/,
   br: /^ {2,}\n(?!\s*$)/,
   del: noop,
-  text: /^[\s\S]+?(?=[\\<!\[_*`]| {2,}\n|$)/
+  text: /^[\s\S]+?(?=[\\<!\[_*`]| {2,}\n|$)/,
+  mathi: /^__([\s\S]+?)__(?!_)|^\\\(([\s\S]+?)\\\)(?!\))/,
+  mathd: /^__([\s\S]+?)__(?!_)|^\\\[([\s\S]+?)\\\](?!\])/,
+  mathdd: /^__([\s\S]+?)__(?!_)|^\$\$([\s\S]+?)\$\$(?!\$)/,
 };
-
 inline._inside = /(?:\[[^\]]*\]|[^\]]|\](?=[^\[]*\]))*/;
 inline._href = /\s*<?([^\s]*?)>?(?:\s+['"]([\s\S]*?)['"])?\s*/;
 
@@ -531,7 +543,7 @@ inline.reflink = replace(inline.reflink)
 inline.normal = merge({}, inline);
 
 /**
- * Pedantic Inline Grammar
+ * Pedantic Inline Grammar Kwang: allow markdown bug
  */
 
 inline.pedantic = merge({}, inline.normal, {
@@ -614,7 +626,29 @@ InlineLexer.prototype.output = function(src) {
     , cap;
 
   while (src) {
-    // escape
+    //Kwang Math first to avoid escape problems.
+    // mathi \( \)
+    if (cap = this.rules.mathi.exec(src)) {
+      src = src.substring(cap[0].length);
+      console.log("mathd! cap[2]="+cap[2]+"\n");
+      out.push(React.createElement(Katex, {md: false}, cap[2]));
+      continue;
+    }
+    // mathd   \[ \]
+    if (cap = this.rules.mathd.exec(src)) {
+      src = src.substring(cap[0].length);
+      console.log("mathi! cap[2]="+cap[2]+"\n");
+      out.push(React.createElement(Katex, {md: true}, cap[2]));
+      continue;
+    }
+    // mathdd $$ $$
+    if (cap = this.rules.math.exec(src)) {
+      src = src.substring(cap[0].length);
+      console.log("math! cap[2]="+cap[2]+"\n");
+      out.push(React.createElement(Katex, {md: true}, cap[2]));
+      continue;
+    }
+    // escape KWANG - Check http://genius.com/3057216
     if (cap = this.rules.escape.exec(src)) {
       src = src.substring(cap[0].length);
       out.push(cap[1]);
@@ -678,9 +712,9 @@ InlineLexer.prototype.output = function(src) {
       out.push(this.outputLink(cap, link));
       continue;
     }
-
     // strong
     if (cap = this.rules.strong.exec(src)) {
+      console.log("strong cap[1]="+cap[1]+", cap[2]="+cap[2]+"\n");
       src = src.substring(cap[0].length);
       out.push(React.DOM.strong(null, this.output(cap[2] || cap[1])));
       continue;
@@ -713,7 +747,6 @@ InlineLexer.prototype.output = function(src) {
       out.push(React.DOM.del(null, this.output(cap[1])));
       continue;
     }
-
     // text
     if (cap = this.rules.text.exec(src)) {
       src = src.substring(cap[0].length);

@@ -28,9 +28,6 @@ var Mathhead = React.createClass({
               <link rel="shortcut icon" href={path+"img/favicon.png"} />
               <link rel="stylesheet" href={path+"css/"+cssname} />
               <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.3.0/katex.min.css"/>
-              <script src="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.3.0/katex.min.js"></script>
-              <script type="text/javascript" src="//use.typekit.net/vqa1hcx.js"></script>
-              <script type="text/javascript">{'try{Typekit.load();}catch(e){}'}</script>
           </head>
           );        
       }
@@ -47,8 +44,6 @@ var Mathhead = React.createClass({
             <meta property="og:description" content={metadesc} />
             <link rel="shortcut icon" href={path+"img/favicon.png"} />
             <link rel="stylesheet" href={path+"css/"+cssname} />
-            <script type="text/javascript" src="//use.typekit.net/vqa1hcx.js"></script>
-            <script type="text/javascript">{'try{Typekit.load();}catch(e){}'}</script>
             <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>  
           </head>
           );
@@ -98,9 +93,6 @@ var Site = React.createClass({
             </footer>
           </div>
           <div id="fb-root" />
-          <script dangerouslySetInnerHTML={{__html: `
-            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
-          `}} />
         </body>
       </html>
     );
