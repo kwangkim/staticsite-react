@@ -14,7 +14,7 @@ var React = require('react');
 var Marked = React.createClass({
   render: function() {
     var props=this.props.options; 
-    if (typeof this.props.html!='undefined' && this.props.html === true ){
+    if (typeof this.props.html!== 'undefined' && this.props.html === true ){
       var Markedhtml = require('Markedhtml');
       return <Markedhtml {...props}>{ this.props.children }</Markedhtml>;
     } else{

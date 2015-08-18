@@ -20,50 +20,6 @@ var Katex = require('Katex');
 From https://github.com/ForbesLindesay/supermarked/blob/master/index.js
 
 
-*/
-/*
-function renderMathsExpression(expr) {
-  if (expr[0] === '$' && expr[expr.length - 1] === '$') {
-    var displayStyle = false;
-    expr = expr.substr(1, expr.length - 2);
-    if (expr[0] === '$' && expr[expr.length - 1] === '$') {
-      displayStyle = true;
-      expr = '\\displaystyle ' + expr.substr(1, expr.length - 2);
-    }
-    var html = katex.renderToString(expr);
-    if (displayStyle) {
-      html = html.replace(/class=\"katex\"/g, 'class="katex katex-block" style="display: block;"');
-    }
-    return html;
-  } else {
-    return null;
-  }
-}
-*/
-/* Mathpart!
-  if (options.math !== false) {
-    options.renderer = new marked.Renderer();
-    var originalCode = options.renderer.code.bind(options.renderer);
-    options.renderer.code = function(code, lang, escaped) {
-      var math;
-      if (!lang && (math = renderMathsExpression(code))) {
-        return math;
-      }
-      return originalCode(code, lang, escaped);
-    };
-    var originalCodeSpan = options.renderer.codespan.bind(options.renderer);
-    options.renderer.codespan = function(text) {
-      var math;
-      if (math = renderMathsExpression(text)) {
-        return math;
-      }
-      return originalCodeSpan(text);
-    };
-  }
-
-
-*/
-
 /**
  * Block-Level Grammar
  */
@@ -628,21 +584,21 @@ InlineLexer.prototype.output = function(src) {
   while (src) {
     //Kwang Math first to avoid escape problems.
     // mathi \( \)
-    if (cap = this.rules.mathi.exec(src)) {
+    if (this.options.math && (cap = this.rules.mathi.exec(src))) {
       src = src.substring(cap[0].length);
       console.log("mathd! cap[2]="+cap[2]+"\n");
       out.push(React.createElement(Katex, {md: false}, cap[2]));
       continue;
     }
     // mathd   \[ \]
-    if (cap = this.rules.mathd.exec(src)) {
+    if (this.options.math && (cap = this.rules.mathd.exec(src))) {
       src = src.substring(cap[0].length);
       console.log("mathi! cap[2]="+cap[2]+"\n");
       out.push(React.createElement(Katex, {md: true}, cap[2]));
       continue;
     }
     // mathdd $$ $$
-    if (cap = this.rules.mathdd.exec(src)) {
+    if (this.options.math && (cap = this.rules.mathdd.exec(src))) {
       src = src.substring(cap[0].length);
       console.log("math! cap[2]="+cap[2]+"\n");
       out.push(React.createElement(Katex, {md: true}, cap[2]));
@@ -1155,7 +1111,8 @@ marked.defaults = {
   highlight: null,
   langPrefix: 'lang-',
   smartypants: false,
-  paragraphFn: null
+  paragraphFn: null,
+  math:true
 };
 
 /**
@@ -1177,7 +1134,8 @@ marked.parse = marked;
 var Markedreact = React.createClass({
   render: function() {
     var content= marked(this.props.children, this.props);
-    return <div>{content}</div>;
+    
+    return React.createElement("div", null, content);
   }
 });
 module.exports = Markedreact;
